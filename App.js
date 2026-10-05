@@ -15,19 +15,23 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      await Notifications.setNotificationChannelAsync('orders', {
-        name: 'Orders',
-        importance: Notifications.AndroidImportance.MAX,
-        sound: 'default',
-        vibrationPattern: [0, 300, 150, 300],
-      });
-      const p = await Notifications.requestPermissionsAsync();
-      if (p.status === 'granted') setTok((await Notifications.getDevicePushTokenAsync()).data);
-    })().catch(() => {});
+      try {
+        await Notifications.setNotificationChannelAsync('orders', {
+          name: 'Orders',
+          importance: Notifications.AndroidImportance.MAX,
+          sound: 'default',
+          vibrationPattern: [0, 300, 150, 300],
+        });
+        const p = await Notifications.requestPermissionsAsync();
+        if (p.status === 'granted') setTok((await Notifications.getDevicePushTokenAsync()).data);
+      } catch (e) {}
+    })();
   }, []);
 
-  const give = () => tok && web.current && web.current.injectJavaScript(`window.__PUSH_TOKEN=${JSON.stringify(tok)};true;`);
-  useEffect(give, [tok]);
+  const give = () => {
+    if (tok && web.current) web.current.injectJavaScript(`window.__PUSH_TOKEN=${JSON.stringify(tok)};true;`);
+  };
+  useEffect(() => { give(); }, [tok]);
 
   return (
     <View style={{ flex: 1, backgroundColor: '#000', paddingTop: StatusBar.currentHeight || 0 }}>
