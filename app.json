@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "Biryani Admin",
+    "slug": "ayancatrers-",
+    "owner": "amjad93614s-team",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "android": {
+      "package": "com.biryani.admin",
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "POST_NOTIFICATIONS"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1c0e0b"
+      }
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "defaultChannel": "orders"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "08b717df-8413-42b8-9ebd-32eca4f000ff"
+      }
+    },
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1c0e0b"
+    }
+  }
+}
