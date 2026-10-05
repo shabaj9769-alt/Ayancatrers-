@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "86398170612",
+    "firebase_url": "https://biryani-category-default-rtdb.firebaseio.com",
+    "project_id": "biryani-category",
+    "storage_bucket": "biryani-category.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86398170612:android:fef1b0d461ee2fc58af5a1",
+        "android_client_info": {
+          "package_name": "com.biryani.admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV5ozT_d2NT4KGJWQlJmmdiuAVm7MfrZk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
