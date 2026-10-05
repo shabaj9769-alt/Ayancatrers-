@@ -12,6 +12,7 @@ Notifications.setNotificationHandler({
 export default function App() {
   const web = useRef(null);
   const [tok, setTok] = useState('');
+  const [k, setK] = useState(0); // k badalne par WebView dobara load hota hai (lock/logout ke baad)
 
   useEffect(() => {
     (async () => {
@@ -36,6 +37,7 @@ export default function App() {
   return (
     <View style={{ flex: 1, backgroundColor: '#000', paddingTop: StatusBar.currentHeight || 0 }}>
       <WebView
+        key={k}
         ref={web}
         source={{ html, baseUrl: 'https://localhost' }}
         originWhitelist={['*']}
@@ -43,6 +45,7 @@ export default function App() {
         domStorageEnabled
         mediaPlaybackRequiresUserAction={false}
         onLoadEnd={give}
+        onMessage={(e) => { if (e.nativeEvent.data === 'reload') setK((x) => x + 1); }}
       />
     </View>
   );
