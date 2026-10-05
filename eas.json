@@ -1,4 +1,9 @@
 {
   "cli": { "version": ">= 12.0.0" },
-  "build": { "apk": { "android": { "buildType": "apk" } } }
+  "build": {
+    "apk": {
+      "node": "20.19.4",
+      "android": { "buildType": "apk" }
+    }
+  }
 }
