@@ -20,7 +20,10 @@
       [
         "expo-notifications",
         {
-          "defaultChannel": "orders"
+          "defaultChannel": "orders_bell",
+          "sounds": [
+            "./assets/bell.wav"
+          ]
         }
       ]
     ],

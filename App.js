@@ -17,10 +17,10 @@ export default function App() {
   useEffect(() => {
     (async () => {
       try {
-        await Notifications.setNotificationChannelAsync('orders', {
-          name: 'Orders',
+        await Notifications.setNotificationChannelAsync('orders_bell', {
+          name: 'New orders (bell)',
           importance: Notifications.AndroidImportance.MAX,
-          sound: 'default',
+          sound: 'bell.wav',
           vibrationPattern: [0, 300, 150, 300],
         });
         const p = await Notifications.requestPermissionsAsync();
