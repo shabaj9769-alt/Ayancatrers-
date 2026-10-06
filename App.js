@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StatusBar, View } from 'react-native';
+import { Platform, StatusBar, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import * as Notifications from 'expo-notifications';
@@ -23,6 +23,8 @@ function Admin() {
   const [tok, setTok] = useState('');
   const [k, setK] = useState(0); // k badalne par WebView dobara load hota hai (lock/logout ke baad)
   const [bg, setBg] = useState('#f5f2fb');
+  // Kuch phones par insets.bottom 0 aata hai aur content navigation key ke neeche chala jata hai, isliye minimum gap
+  const bottom = insets.bottom > 0 ? insets.bottom : Platform.OS === 'android' ? 48 : 0;
 
   useEffect(() => {
     (async () => {
@@ -45,7 +47,7 @@ function Admin() {
   useEffect(() => { give(); }, [tok]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: bg, paddingTop: insets.top || StatusBar.currentHeight || 0, paddingBottom: insets.bottom }}>
+    <View style={{ flex: 1, backgroundColor: bg, paddingTop: insets.top || StatusBar.currentHeight || 0, paddingBottom: bottom }}>
       <StatusBar translucent backgroundColor="transparent" barStyle={isDark(bg) ? 'light-content' : 'dark-content'} />
       <WebView
         key={k}
@@ -53,6 +55,7 @@ function Admin() {
         source={{ html, baseUrl: 'https://localhost' }}
         originWhitelist={['*']}
         javaScriptEnabled
+        textZoom={100}
         domStorageEnabled
         mediaPlaybackRequiresUserAction={false}
         style={{ backgroundColor: bg }}
