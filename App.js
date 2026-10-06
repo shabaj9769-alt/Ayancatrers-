@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StatusBar, View } from 'react-native';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import * as Notifications from 'expo-notifications';
 import html from './adminHtml';
@@ -9,10 +10,19 @@ Notifications.setNotificationHandler({
   handleNotification: async () => ({ shouldShowAlert: false, shouldPlaySound: false, shouldSetBadge: false }),
 });
 
-export default function App() {
+// "rgb(r, g, b)" se dekhta hai ki background dark hai ya light (status bar ke icon ka rang chunne ke liye)
+const isDark = (c) => {
+  const m = String(c).match(/\d+/g);
+  if (!m || m.length < 3) return true;
+  return 0.299 * +m[0] + 0.587 * +m[1] + 0.114 * +m[2] < 140;
+};
+
+function Admin() {
   const web = useRef(null);
+  const insets = useSafeAreaInsets(); // status bar + neeche ka Android navigation bar
   const [tok, setTok] = useState('');
   const [k, setK] = useState(0); // k badalne par WebView dobara load hota hai (lock/logout ke baad)
+  const [bg, setBg] = useState('#f5f2fb');
 
   useEffect(() => {
     (async () => {
@@ -35,7 +45,8 @@ export default function App() {
   useEffect(() => { give(); }, [tok]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000', paddingTop: StatusBar.currentHeight || 0 }}>
+    <View style={{ flex: 1, backgroundColor: bg, paddingTop: insets.top || StatusBar.currentHeight || 0, paddingBottom: insets.bottom }}>
+      <StatusBar translucent backgroundColor="transparent" barStyle={isDark(bg) ? 'light-content' : 'dark-content'} />
       <WebView
         key={k}
         ref={web}
@@ -44,9 +55,22 @@ export default function App() {
         javaScriptEnabled
         domStorageEnabled
         mediaPlaybackRequiresUserAction={false}
+        style={{ backgroundColor: bg }}
         onLoadEnd={give}
-        onMessage={(e) => { if (e.nativeEvent.data === 'reload') setK((x) => x + 1); }}
+        onMessage={(e) => {
+          const d = e.nativeEvent.data;
+          if (d === 'reload') setK((x) => x + 1);
+          else if (typeof d === 'string' && d.startsWith('bg:')) setBg(d.slice(3));
+        }}
       />
     </View>
+  );
+}
+
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <Admin />
+    </SafeAreaProvider>
   );
 }
