@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Platform, StatusBar, View } from 'react-native';
+import { Alert, Platform, StatusBar, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import * as Notifications from 'expo-notifications';
+import * as FileSystem from 'expo-file-system/legacy';
+import * as Sharing from 'expo-sharing';
 import html from './adminHtml';
 
 // App khula ho to beep/alert admin page khud karta hai, isliye yahan foreground par chup rakha hai.
@@ -15,6 +17,17 @@ const isDark = (c) => {
   const m = String(c).match(/\d+/g);
   if (!m || m.length < 3) return true;
   return 0.299 * +m[0] + 0.587 * +m[1] + 0.114 * +m[2] < 140;
+};
+
+// Admin page se aaya PDF (base64) phone me save karke Share/Save sheet kholta hai
+const savePdf = async (name, b64) => {
+  try {
+    const safe = String(name || 'report.pdf').replace(/[^\w.\-]/g, '_');
+    const uri = FileSystem.cacheDirectory + safe;
+    await FileSystem.writeAsStringAsync(uri, b64, { encoding: FileSystem.EncodingType.Base64 });
+    if (await Sharing.isAvailableAsync()) await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: 'Sales & GST Report', UTI: 'com.adobe.pdf' });
+    else Alert.alert('PDF saved', uri);
+  } catch (e) { Alert.alert('PDF', 'Could not save the PDF. Please try again.'); }
 };
 
 function Admin() {
@@ -64,6 +77,9 @@ function Admin() {
           const d = e.nativeEvent.data;
           if (d === 'reload') setK((x) => x + 1);
           else if (typeof d === 'string' && d.startsWith('bg:')) setBg(d.slice(3));
+          else if (typeof d === 'string' && d.startsWith('{')) {
+            try { const m = JSON.parse(d); if (m && m.type === 'pdf' && m.b64) savePdf(m.name, m.b64); } catch (err) {}
+          }
         }}
       />
     </View>
